@@ -1,0 +1,15 @@
+appdirs==1.4.4
+cfgv==3.2.0
+distlib==0.3.1
+filelock==3.0.12
+identify==2.2.4
+nodeenv==1.6.0
+numpy==1.20.2
+opencv-python==4.5.1.48
+pre-commit==2.12.1
+pydantic==1.8.1
+PyYAML==5.4.1
+six==1.16.0
+toml==0.10.2
+typing-extensions==3.10.0.0
+virtualenv==20.4.6
