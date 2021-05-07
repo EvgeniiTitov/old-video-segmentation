@@ -6,7 +6,7 @@ from helpers import LoggerMixin
 from segmenter import AbstractSegmenter
 
 
-class SegmenterRunner(threading.Thread, LoggerMixin):
+class SegmenterRunnerThread(threading.Thread, LoggerMixin):
     def __init__(
         self,
         progress: t.Mapping[str, t.Any],
@@ -34,5 +34,5 @@ class SegmenterRunner(threading.Thread, LoggerMixin):
                 continue
 
             video_id, batch = item
-            detections = self._segmenter.process_batch(batch)
-            self._queue_out.put((video_id, batch, detections))
+            masks = self._segmenter.process_batch(batch)
+            self._queue_out.put((video_id, batch, masks))

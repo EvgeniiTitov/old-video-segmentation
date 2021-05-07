@@ -8,12 +8,11 @@ from helpers import LoggerMixin
 from segmenter import AbstractSegmenter
 from workers import FrameReaderThread
 from workers import ResultProcessorThread
-from workers import SegmenterRunner
+from workers import SegmenterRunnerThread
 
 
 class Detector(LoggerMixin):
     def __init__(self, segmenter: AbstractSegmenter, destination: str) -> None:
-        self.logger.debug("Detector initialized")
         self._progress: t.MutableMapping[str, t.Any] = dict()
         self._threads = []
 
@@ -30,8 +29,7 @@ class Detector(LoggerMixin):
         )
         self._threads.append(self._frames_reader)
 
-        # The segmentation algorithm could be easily swapped at this point
-        self._segmenter_runner = SegmenterRunner(
+        self._segmenter_runner = SegmenterRunnerThread(
             progress=self._progress,
             segmenter=segmenter,
             queue_in=self._Q_reader_to_runner,
@@ -45,15 +43,20 @@ class Detector(LoggerMixin):
             destination=destination,
         )
         self._threads.append(self._writer)  # type: ignore
-        self._start()
-        self.logger.debug("Detector started")
+        self._is_started = False
 
-    def process_video(self, path_to_video: str) -> t.Tuple[bool, str]:
+    def process_video(self, path_to_video: str) -> t.Tuple[bool, str, str]:
         """Receives path to a video to process. Create a unique ID for the
         video, adds it to the global progress dictionary and returns the
         result: whether the video has been accepted for processing or not, and
         its id
         """
+        if not self._is_started:
+            self.logger.error(
+                "Start the detector before submitting a video for processing"
+            )
+            return False, "", "Detector not started"
+
         self.logger.debug(f"Accepted video {path_to_video} for processing")
         if (
             not os.path.splitext(path_to_video)[0].lower()
@@ -62,7 +65,8 @@ class Detector(LoggerMixin):
             self.logger.error(
                 f"Cannot process video {path_to_video}. Unsupported extension."
             )
-            return False, ""
+            return False, "", "Unsupported extension"
+
         video_id = str(uuid.uuid4())
         self._progress[video_id] = {
             "status": "Awaiting processing",
@@ -75,14 +79,20 @@ class Detector(LoggerMixin):
             "processed_frames": 0,
         }
         self._Q_files_to_process.put(video_id)
-        return True, video_id
+        return True, video_id, ""
 
-    def _start(self) -> None:
+    def is_processing_finished(self) -> bool:
+        return len(self._progress) == 0
+
+    def start(self) -> None:
         for thread in self._threads:
             thread.start()
+        self._is_started = True
+        self.logger.debug("Detector started")
 
     def stop(self) -> None:
         self._Q_files_to_process.put("STOP")
         for thread in self._threads:
             thread.join()
+        self._is_started = False
         self.logger.debug("Detector stopped")

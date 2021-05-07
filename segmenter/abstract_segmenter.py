@@ -9,5 +9,5 @@ class AbstractSegmenter(ABC):
     @abstractmethod
     def process_batch(
         self, batch: t.Sequence[np.ndarray]
-    ) -> t.Sequence[t.Any]:
+    ) -> t.Sequence[np.ndarray]:
         ...

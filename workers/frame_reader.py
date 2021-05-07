@@ -11,7 +11,7 @@ from helpers import LoggerMixin
 class FrameReaderThread(threading.Thread, LoggerMixin):
     def __init__(
         self,
-        progress: t.Mapping[str, t.Any],
+        progress: t.MutableMapping[str, t.Any],
         queue_in: Queue,
         queue_out: Queue,
         batch_size: int,
@@ -30,17 +30,27 @@ class FrameReaderThread(threading.Thread, LoggerMixin):
             item = self._queue_in.get()
             if item == "STOP":
                 self.logger.debug("FrameReader worker stopped")
+                self._queue_out.put("STOP")
                 break
             else:
                 self.logger.debug(f"Started decoding video {item}")
 
             video_id = item
+            # TODO: How to correctly implement this?
+            if video_id not in self._progress:
+                self.logger.exception(
+                    f"Video id {video_id} is not in the progress"
+                )
+                self._queue_out.put("STOP")
+                raise Exception
+
             path_to_video = self._progress[video_id]["path_to_video"]
+            self.logger.debug(f"Started decoding the video: {path_to_video}")
             try:
                 cap = cv2.VideoCapture(path_to_video)
             except Exception as e:
                 self.logger.exception(
-                    f"Failed to open the video {item}. Error: {e}"
+                    f"Failed to open the video {item}. Error: {e}. Skipping"
                 )
                 continue
 
