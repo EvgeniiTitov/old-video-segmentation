@@ -28,6 +28,7 @@ class SegmenterRunnerThread(threading.Thread, LoggerMixin):
             item = self._queue_in.get()
             if item == "STOP":
                 self.logger.debug("SegmenterRunner worker stopped")
+                self._queue_out.put("STOP")
                 break
             elif item == "END":
                 self._queue_out.put("END")

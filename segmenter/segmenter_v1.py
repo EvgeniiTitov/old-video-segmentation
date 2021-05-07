@@ -24,7 +24,7 @@ class SegmenterV1(AbstractSegmenter):
 
     @staticmethod
     @timer
-    def process_frame(self, frame: np.ndarray) -> np.ndarray:
+    def process_frame(frame: np.ndarray) -> np.ndarray:
         """
         Extra function call is costly - its here to time the algorithm only
         # TODO: Move all hardcoded parameter values to the Config

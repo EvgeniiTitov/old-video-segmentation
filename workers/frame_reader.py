@@ -45,7 +45,6 @@ class FrameReaderThread(threading.Thread, LoggerMixin):
                 raise Exception
 
             path_to_video = self._progress[video_id]["path_to_video"]
-            self.logger.debug(f"Started decoding the video: {path_to_video}")
             try:
                 cap = cv2.VideoCapture(path_to_video)
             except Exception as e:

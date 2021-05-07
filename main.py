@@ -16,7 +16,7 @@ logger = Logger(__file__, verbose=Config.VERBOSE)
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--path_to_video", type=str)
-    parser.add_argument("--destination", type=str)
+    parser.add_argument("-d", "--destination", type=str)
     return parser.parse_args()
 
 
@@ -45,6 +45,7 @@ def main() -> int:
             f"Video {args.path_to_video} was not accepted for processing. "
             f"Error: {err}"
         )
+        detector.stop()
 
     # TODO: Await until the  processing is complete
     while not detector.is_processing_finished():

@@ -57,16 +57,15 @@ class Detector(LoggerMixin):
             )
             return False, "", "Detector not started"
 
-        self.logger.debug(f"Accepted video {path_to_video} for processing")
         if (
-            not os.path.splitext(path_to_video)[0].lower()
+            not os.path.splitext(path_to_video)[-1].lower()
             in Config.ALLOWED_EXTS
         ):
             self.logger.error(
                 f"Cannot process video {path_to_video}. Unsupported extension."
             )
             return False, "", "Unsupported extension"
-
+        self.logger.debug(f"Accepted video {path_to_video} for processing")
         video_id = str(uuid.uuid4())
         self._progress[video_id] = {
             "status": "Awaiting processing",
@@ -82,7 +81,9 @@ class Detector(LoggerMixin):
         return True, video_id, ""
 
     def is_processing_finished(self) -> bool:
-        return len(self._progress) == 0
+        return "Awaiting processing" in [
+            self._progress[k]["status"] for k in self._progress.keys()
+        ]
 
     def start(self) -> None:
         for thread in self._threads:
