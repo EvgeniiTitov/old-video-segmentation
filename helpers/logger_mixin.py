@@ -7,7 +7,7 @@ from config import Config
 logging.basicConfig(
     format="%(asctime)s %(name)s %(levelname)s %(lineno)s: %(message)s",
     stream=sys.stdout,
-    level=logging.DEBUG if Config.VERBOSE else logging.WARNING,
+    level=logging.DEBUG if Config.VERBOSE else logging.INFO,
     datefmt="%Y-%m-%dT%H:%M:%S%z",
 )
 

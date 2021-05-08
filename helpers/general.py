@@ -12,7 +12,7 @@ class RuntimeArgsValidator(BaseModel):
     def _video_file_exists(cls, path_to_video: str) -> str:
         if not os.path.exists(path_to_video):
             raise FileNotFoundError(
-                f"Failed to locate the video: {path_to_video}"
+                f"Failed to locate the video provided: {path_to_video}"
             )
         return path_to_video
 

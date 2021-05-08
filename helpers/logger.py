@@ -12,7 +12,7 @@ class Logger:
         if verbose:
             self._logger.setLevel(logging.DEBUG)
         else:
-            self._logger.setLevel(logging.ERROR)
+            self._logger.setLevel(logging.INFO)
         self._logger.addHandler(self._get_console_handler())
 
     def _get_console_handler(self) -> logging.StreamHandler:

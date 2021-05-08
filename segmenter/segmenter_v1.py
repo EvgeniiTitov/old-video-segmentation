@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 
 from .abstract_segmenter import AbstractSegmenter
-from helpers import timer
 
 
 class SegmenterV1(AbstractSegmenter):
@@ -23,7 +22,7 @@ class SegmenterV1(AbstractSegmenter):
         return [SegmenterV1.process_frame(frame) for frame in batch]
 
     @staticmethod
-    @timer
+    # @timer
     def process_frame(frame: np.ndarray) -> np.ndarray:
         """
         Extra function call is costly - its here to time the algorithm only

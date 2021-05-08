@@ -1,5 +1,5 @@
 class Config:
-    VERBOSE = True
+    VERBOSE = False
     ALLOWED_EXTS = [".mp4"]
     READER_RUNNER_Q_SIZE = 10
     RUNNER_TO_WRITER_Q_SIZE = 10

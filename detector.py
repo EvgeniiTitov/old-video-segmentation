@@ -81,7 +81,7 @@ class Detector(LoggerMixin):
         return True, video_id, ""
 
     def is_processing_finished(self) -> bool:
-        return "Awaiting processing" in [
+        return "Awaiting processing" not in [
             self._progress[k]["status"] for k in self._progress.keys()
         ]
 
@@ -89,11 +89,23 @@ class Detector(LoggerMixin):
         for thread in self._threads:
             thread.start()
         self._is_started = True
-        self.logger.debug("Detector started")
+        self.logger.info("Detector started")
 
     def stop(self) -> None:
         self._Q_files_to_process.put("STOP")
         for thread in self._threads:
             thread.join()
         self._is_started = False
-        self.logger.debug("Detector stopped")
+        self.logger.info("Detector stopped")
+
+    def get_video_progress(self, video_id: str) -> t.Tuple[str, t.List[str]]:
+        if video_id not in self._progress.keys():
+            return (
+                "The ID provided doesn't match any videos getting processed",
+                [],
+            )
+        else:
+            return "", [
+                self._progress[video_id]["processed_frames"],
+                self._progress[video_id]["total_frames"],
+            ]

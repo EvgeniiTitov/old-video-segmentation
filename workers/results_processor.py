@@ -46,14 +46,13 @@ class ResultProcessorThread(threading.Thread, LoggerMixin):
                 self._previous_id = video_id
 
             if not self._video_writer:
-                # TODO: Replace with ".mp4"
                 out_path = os.path.join(
-                    self._destination, video_name + "_processed.avi"
+                    self._destination, video_name + "_processed.mp4"
                 )
                 fps = self._progress[video_id]["fps"]
                 height = self._progress[video_id]["frame_height"]
                 width = self._progress[video_id]["frame_width"]
-                fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+                fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
                 try:
                     self._video_writer = cv2.VideoWriter(
                         out_path, fourcc, fps, (width, height), True
