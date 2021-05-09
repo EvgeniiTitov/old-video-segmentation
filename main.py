@@ -1,5 +1,6 @@
 import argparse
 import os
+import time
 import typing as t
 
 from pydantic import ValidationError
@@ -56,6 +57,7 @@ def main() -> int:
     while True:
         if detector.is_processing_finished():
             break
+        time.sleep(0.1)
 
     detector.stop()
     return 0
