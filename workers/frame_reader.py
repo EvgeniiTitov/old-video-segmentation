@@ -36,13 +36,10 @@ class FrameReaderThread(threading.Thread, LoggerMixin):
                 self.logger.debug(f"Started decoding video {item}")
 
             video_id = item
-            # TODO: How to correctly implement this?
             if video_id not in self._progress:
-                self.logger.exception(
-                    f"Video id {video_id} is not in the progress"
+                self.logger.error(
+                    f"Unknown ID {video_id}, it wasn't accepted for processing"
                 )
-                self._queue_out.put("STOP")
-                raise Exception
 
             path_to_video = self._progress[video_id]["path_to_video"]
             try:

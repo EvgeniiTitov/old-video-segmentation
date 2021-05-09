@@ -21,7 +21,7 @@ class SegmenterRunnerThread(threading.Thread, LoggerMixin):
         self._segmenter = segmenter
         self._queue_in = queue_in
         self._queue_out = queue_out
-        self.logger.debug("SegmenterRunner worker initialized")
+        self.logger.debug("SegmentationRunner worker initialized")
 
     def run(self) -> None:
         while True:

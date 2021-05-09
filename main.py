@@ -19,7 +19,6 @@ def parse_args() -> t.MutableMapping[str, t.Any]:
     parser = argparse.ArgumentParser()
     parser.add_argument("--path_to_video", type=str)
     parser.add_argument("-d", "--destination", type=str)
-    parser.add_argument("--show_progress", action="store_true")
     return vars(parser.parse_args())
 
 
@@ -54,16 +53,9 @@ def main() -> int:
         )
         detector.stop()
 
-    # TODO: Unexpected behaviour - needs fixing
     while True:
         if detector.is_processing_finished():
             break
-        if args["show_progress"]:
-            err, info = detector.get_video_progress(_id)
-            if err:
-                logger.error(err)
-            else:
-                logger.info(f"Processed {info[0]} / {info[1]} frames")
 
     detector.stop()
     return 0
